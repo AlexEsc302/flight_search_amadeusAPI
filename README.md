@@ -25,19 +25,21 @@ This is a reactive Java Spring Boot application that allows users to search for 
    git clone https://github.com/AlexEsc302/flight_search_amadeusAPI.git
    cd flight_search_amadeusAPI
 2. Add your Amadeus credentials in application.properties:
-
-  amadeus.client.id=#YourClient
-  amadeus.client.secret=#YourSecret
+   ```java
+   amadeus.client.id=#YourClient
+   amadeus.client.secret=#YourSecret
 
 3. Run the application:
-  ./gradlew bootRun
+   ```bash
+   ./gradlew bootRun
 
-4. Call the endpoint:
-  GET /api/flights/search?origin=GDL&destination=MEX&departureDate=2025-07-01&adults=1
+5. Call the endpoint:
+   ```bash
+   GET /api/flights/search?origin=GDL&destination=MEX&departureDate=2025-07-01&adults=1
 
 
 ## 🧪 Sample Response
-
+```json
 {
         "id": "1-0",
         "parentOfferId": null,
