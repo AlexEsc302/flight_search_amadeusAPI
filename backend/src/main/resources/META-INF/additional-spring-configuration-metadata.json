@@ -1,0 +1,17 @@
+{"properties": [{
+  "name": "cors.allowed-origins",
+  "type": "java.lang.String",
+  "description": "A description for 'cors.allowed-origins'",
+
+  "name": "amadeus.api.base-url",
+  "type": "java.lang.String",
+  "description": "A description for 'amadeus.api.base-url'",
+
+  "name": "amadeus.api.secret",
+  "type": "java.lang.String",
+  "description": "A description for 'amadeus.api.secret'",
+
+  "name": "amadeus.api.key",
+  "type": "java.lang.String",
+  "description": "A description for 'amadeus.api.key'"
+}]}
