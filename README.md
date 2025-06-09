@@ -35,7 +35,7 @@ This is a reactive Java Spring Boot application that allows users to search for 
 
 5. Call the endpoint:
    ```bash
-   GET /api/flights/search?origin=GDL&destination=MEX&departureDate=2025-07-01&adults=1
+   GET http://localhost:8080/api/flights?origin=LAX&destination=JFK&departureDate=2025-06-15&adults=1&currency=USD&nonStop=true
 
 
 ## 🧪 Sample Response
