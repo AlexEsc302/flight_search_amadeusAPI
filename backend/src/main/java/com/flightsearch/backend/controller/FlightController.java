@@ -3,18 +3,24 @@ package com.flightsearch.backend.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.flightsearch.backend.dto.FlightDetailsResponseDTO;
 import com.flightsearch.backend.service.AmadeusService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api")
@@ -122,11 +128,99 @@ public class FlightController {
 
         // Llamar al servicio
         return amadeusService.searchFlights(origin, destination, departureDate, adults, currency, nonStop, returnDate)
-            .map(result -> ResponseEntity.ok().<Object>body(result)) // <--- Crucial change here
+            .map(result -> ResponseEntity.ok().<Object>body(result)) 
             .onErrorResume(error -> {
                 logger.error("Error during flight search: {}", error.getMessage(), error);
                 return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(createErrorJson("An unexpected error occurred during flight search. Please try again later.")));
+            });
+    }
+
+    /**
+     * Flight details endpoint
+     * GET /api/flights/{amadeusOfferId}/details
+     * amadeusOfferId is the original Amadeus ID, NOT the one suffixed with -0 or -1
+     */
+    @GetMapping("/flights/{amadeusOfferId}/details")
+    public Mono<ResponseEntity<Object>> getFlightDetails(@PathVariable String amadeusOfferId) {
+        logger.info("Received request for flight details for Amadeus Offer ID: {}", amadeusOfferId);
+
+        return amadeusService.getFlightOfferDetails(amadeusOfferId) // Mono<JsonNode> (this is now the *individual flight offer* JsonNode)
+            .flatMap(individualFlightOfferNode -> { // Renamed for clarity: it's the cached flight offer
+                final JsonNode mainFlightOfferNode = individualFlightOfferNode; // No need to extract further, this IS the offer
+
+                Set<String> uniqueAirportCodes = new HashSet<>();
+                // Populate uniqueAirportCodes using mainFlightOfferNode (the correct node)
+                JsonNode itineraries = mainFlightOfferNode.get("itineraries");
+                if (itineraries != null && itineraries.isArray()) {
+                    for (JsonNode itinerary : itineraries) {
+                        JsonNode segmentsArray = itinerary.get("segments");
+                        if (segmentsArray != null && segmentsArray.isArray()) {
+                            for (JsonNode segment : segmentsArray) {
+                                if (segment.has("departure") && segment.get("departure").has("iataCode")) {
+                                    uniqueAirportCodes.add(amadeusService.safeGetText(segment.get("departure"), "iataCode"));
+                                }
+                                if (segment.has("arrival") && segment.get("arrival").has("iataCode")) {
+                                    uniqueAirportCodes.add(amadeusService.safeGetText(segment.get("arrival"), "iataCode"));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Map<String, String> fullAirportNamesMap = new ConcurrentHashMap<>();
+                Mono<FlightDetailsResponseDTO> resultMono; 
+
+                if (uniqueAirportCodes.isEmpty()) {
+                    logger.warn("No airport codes found in flight offer details response for offer ID: {}. Skipping airport name lookup.", amadeusOfferId);
+                    resultMono = Mono.just(amadeusService.mapToFlightDetailsResponseDTO(amadeusOfferId, mainFlightOfferNode, fullAirportNamesMap));
+                } else {
+                    resultMono = Flux.fromIterable(uniqueAirportCodes)
+                        .flatMap(iataCode -> 
+                            amadeusService.searchAirportsSimple(iataCode)
+                                .map(airportDetailsNode -> {
+                                    String airportName = null;
+                                    if (airportDetailsNode != null && airportDetailsNode.has("data") && airportDetailsNode.get("data").isArray() && airportDetailsNode.get("data").size() > 0) {
+                                        JsonNode airportData = airportDetailsNode.get("data").get(0);
+                                        airportName = amadeusService.safeGetText(airportData, "name");
+                                        if (airportName == null) {
+                                            JsonNode addressNode = airportData.get("address");
+                                            if (addressNode != null) {
+                                                airportName = amadeusService.safeGetText(addressNode, "cityName");
+                                            }
+                                        }
+                                        if (airportName == null) {
+                                            String detailedName = amadeusService.safeGetText(airportData, "detailedName");
+                                            if (detailedName != null && detailedName.contains(":")) {
+                                                airportName = detailedName.substring(detailedName.indexOf(":") + 1).trim();
+                                            } else {
+                                                airportName = detailedName;
+                                            }
+                                        }
+                                    }
+                                    fullAirportNamesMap.put(iataCode, airportName != null ? airportName : iataCode);
+                                    return (Void) null;
+                                })
+                                .onErrorResume(e -> {
+                                    logger.error("Error fetching airport details for {}: {}. Falling back to IATA code.", iataCode, e.getMessage());
+                                    fullAirportNamesMap.put(iataCode, iataCode);
+                                    return Mono.empty();
+                                })
+                        )
+                        .then(Mono.defer(() -> {
+                            logger.info("Finished fetching all airport names for flight details for offer ID: {}. Mapping details response.", amadeusOfferId);
+                            return Mono.just(amadeusService.mapToFlightDetailsResponseDTO(amadeusOfferId, mainFlightOfferNode, fullAirportNamesMap));
+                        }));
+                }
+                
+                return resultMono.map(detailsDTO -> ResponseEntity.ok().<Object>body(detailsDTO)); // Moved .map here
+            })
+            .onErrorResume(error -> {
+                logger.error("Error during flight details fetch for offer ID {}: {}", amadeusOfferId, error.getMessage(), error);
+                if (error instanceof IllegalArgumentException) {
+                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(createErrorJson(error.getMessage())));
+                }
+                return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(createErrorJson("An unexpected error occurred while fetching flight details. Please try again later.")));
             });
     }
 

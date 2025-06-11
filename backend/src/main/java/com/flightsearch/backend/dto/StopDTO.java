@@ -1,19 +1,33 @@
+// src/main/java/com/flightsearch/backend/dto/StopDTO.java
 package com.flightsearch.backend.dto;
 
-public class StopDTO { 
-    private AirportDTO airport; 
-    private String duration;
+public class StopDTO {
+    private String airportCode;
+    private String airportName;
+    private String layoverDuration; // e.g., "PT2H40M" or "2h 40m"
 
-    public StopDTO() {}
-
-    public StopDTO(AirportDTO airport, String duration) {
-        this.airport = airport;
-        this.duration = duration;
+    // Getters and Setters
+    public String getAirportCode() {
+        return airportCode;
     }
 
-    public AirportDTO getAirport() { return airport; }
-    public void setAirport(AirportDTO airport) { this.airport = airport; }
+    public void setAirportCode(String airportCode) {
+        this.airportCode = airportCode;
+    }
 
-    public String getDuration() { return duration; }
-    public void setDuration(String duration) { this.duration = duration; }
+    public String getAirportName() {
+        return airportName;
+    }
+
+    public void setAirportName(String airportName) {
+        this.airportName = airportName;
+    }
+
+    public String getLayoverDuration() {
+        return layoverDuration;
+    }
+
+    public void setLayoverDuration(String layoverDuration) {
+        this.layoverDuration = layoverDuration;
+    }
 }

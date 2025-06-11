@@ -8,13 +8,13 @@ public class FlightSegmentDTO {
     private String carrierCode;
     private String number;
     private String duration;
-    private String operatingCarrierCode; // <-- ADD THIS FIELD
+    private String operatingCarrierCode; 
 
     public FlightSegmentDTO() {}
 
     public FlightSegmentDTO(String departureIataCode, String arrivalIataCode, String departureDateTime,
                             String arrivalDateTime, String carrierCode, String number, String duration,
-                            String operatingCarrierCode) { // <-- ADD TO CONSTRUCTOR
+                            String operatingCarrierCode) { 
         this.departureIataCode = departureIataCode;
         this.arrivalIataCode = arrivalIataCode;
         this.departureDateTime = departureDateTime;
@@ -22,7 +22,7 @@ public class FlightSegmentDTO {
         this.carrierCode = carrierCode;
         this.number = number;
         this.duration = duration;
-        this.operatingCarrierCode = operatingCarrierCode; // <-- SET IN CONSTRUCTOR
+        this.operatingCarrierCode = operatingCarrierCode;
     }
 
     public String getDepartureIataCode() { return departureIataCode; }
