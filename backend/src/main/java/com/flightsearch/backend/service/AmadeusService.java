@@ -185,7 +185,7 @@ public class AmadeusService {
                     .doOnError(error -> logger.error("Raw flight search failed: {}", error.getMessage()))
                     .flatMap(rawFlightResponse -> {
 
-                        // --- INICIO DE LA SECCIÓN CRÍTICA DE CACHEO ---
+                        // --- Cache section ---
                         JsonNode dataNodeForCaching = rawFlightResponse.get("data");
                         if (dataNodeForCaching != null && dataNodeForCaching.isArray()) {
                             for (JsonNode offerToCache : dataNodeForCaching) {
@@ -198,7 +198,7 @@ public class AmadeusService {
                         } else {
                              logger.warn("No 'data' found in raw flight response for caching purposes.");
                         }
-                        // --- FIN DE LA SECCIÓN CRÍTICA DE CACHEO ---
+                        // --- End of cache section ---
 
 
                         Set<String> uniqueAirportCodes = new HashSet<>();
@@ -510,8 +510,6 @@ public class AmadeusService {
         FlightDetailsResponseDTO dto = new FlightDetailsResponseDTO();
         dto.setAmadeusOfferId(amadeusOfferId);
 
-        // Declare travelerPricingsNode here so it's accessible throughout the method
-        // This is crucial because amenities are found within travelerPricings.
         JsonNode travelerPricingsNode = flightOffer.get("travelerPricings");
 
         // --- TotalPrice ---
@@ -519,8 +517,7 @@ public class AmadeusService {
         if (priceNode != null) {
             PriceDTO priceDTO = new PriceDTO();
             priceDTO.setBase(safeGetText(priceNode, "base"));
-            // Make sure to get 'grandTotal' for the overall total price
-            priceDTO.setTotal(safeGetText(priceNode, "grandTotal")); // <--- CHANGE: Use "grandTotal"
+            priceDTO.setTotal(safeGetText(priceNode, "grandTotal")); 
             priceDTO.setCurrency(safeGetText(priceNode, "currency"));
 
             // Calculate fees as total - base
@@ -546,7 +543,6 @@ public class AmadeusService {
 
                 if (travelerPricingsNode.size() > 0) {
                     JsonNode firstTravelerPricing = travelerPricingsNode.get(0);
-                    // Ensure pricePerAdult is correctly retrieved from first traveler pricing's price.total
                     if (firstTravelerPricing.has("price") && firstTravelerPricing.get("price").has("total")) {
                         priceDTO.setPricePerAdult(firstTravelerPricing.get("price").get("total").asText());
                     } else {
@@ -578,7 +574,6 @@ public class AmadeusService {
                 itineraryDTO.setId(amadeusOfferId + "-" + itineraryIndex++);
                 itineraryDTO.setDuration(safeGetText(itineraryNode, "duration"));
 
-                // Simple logic for direction based on index. Adjust if you have other rules.
                 itineraryDTO.setDirection(itineraryIndex == 1 ? "OUTBOUND" : "INBOUND");
 
 
@@ -587,7 +582,7 @@ public class AmadeusService {
                     JsonNode firstSegment = segmentsNode.get(0);
                     JsonNode lastSegment = segmentsNode.get(segmentsNode.size() - 1);
 
-                    // This is where you set the departure and arrival times for the ITINERARY
+                    // This is where is set the departure and arrival times for the ITINERARY
                     // They are taken from the first and last segments of that itinerary.
                     itineraryDTO.setDepartureDateTime(safeGetText(firstSegment.get("departure"), "at"));
                     itineraryDTO.setArrivalDateTime(safeGetText(lastSegment.get("arrival"), "at"));
@@ -646,7 +641,7 @@ public class AmadeusService {
                     for (JsonNode segmentNode : segmentsNode) {
                         DetailedSegmentDTO detailedSegment = new DetailedSegmentDTO();
 
-                        String currentSegmentId = safeGetText(segmentNode, "id"); // Ensure this is extracting "1" or "2"
+                        String currentSegmentId = safeGetText(segmentNode, "id"); 
                         logger.debug("Processing segment with ID: {}", currentSegmentId);
 
                         detailedSegment.setDepartureIataCode(safeGetText(segmentNode.get("departure"), "iataCode"));
@@ -660,8 +655,8 @@ public class AmadeusService {
                         detailedSegment.setAircraftCode(safeGetText(segmentNode.get("aircraft"), "code"));
 
                         // Lookup names using predefined maps or a more comprehensive dictionary
-                        detailedSegment.setDepartureAirportName(detailedSegment.getDepartureIataCode()); // Placeholder, improve with lookup
-                        detailedSegment.setArrivalAirportName(detailedSegment.getArrivalIataCode());   // Placeholder, improve with lookup
+                        detailedSegment.setDepartureAirportName(detailedSegment.getDepartureIataCode()); 
+                        detailedSegment.setArrivalAirportName(detailedSegment.getArrivalIataCode());  
 
                         detailedSegment.setAirlineName(getAirlineName(detailedSegment.getCarrierCode()));
                         detailedSegment.setOperatingAirlineName(getAirlineName(detailedSegment.getOperatingCarrierCode()));
@@ -707,19 +702,11 @@ public class AmadeusService {
                                                     amenityDTO.setDescription(safeGetText(amenityNode, "description"));
                                                     amenityDTO.setChargeable(safeGetBoolean(amenityNode, "isChargeable", false));
                                                     amenityDTO.setAmenityType(safeGetText(amenityNode, "amenityType"));
-
-                                                    // Add amenityProviderName if your DTO supports it
-                                                    JsonNode amenityProviderNode = amenityNode.get("amenityProvider");
-                                                    if (amenityProviderNode != null && amenityProviderNode.has("name")) {
-                                                        // amenityDTO.setAmenityProviderName(safeGetText(amenityProviderNode, "name")); // Uncomment if you have this field
-                                                    }
                                                     fareDetail.getAmenities().add(amenityDTO);
                                                     logger.debug("      Added Amenity: Description='{}'", amenityDTO.getDescription());
                                                 }
                                             }
                                             travelerFareDetailsForSegment.add(fareDetail);
-                                            // It's usually fine to keep processing all matching fare details if there could be multiple for a segment/traveler
-                                            // break; // Uncomment if you only expect one fareDetail per segment/traveler
                                         } else {
                                             logger.debug("  NO MATCH: fareDetailNode segmentId '{}' != currentSegmentId '{}'", fareDetailSegmentId, currentSegmentId);
                                         }
