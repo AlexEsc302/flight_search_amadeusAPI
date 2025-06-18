@@ -1,0 +1,134 @@
+/* frontend/src/pages/ResultsPage/ResultsPage.module.css */
+.results-page {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--dark-background);
+  min-height: 100vh;
+  color: var(--dark-text-primary);
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.return-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--dark-surface);
+  color: whitesmoke;
+  border: 1px solid var(--dark-border);
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.return-button:hover {
+  background-color: #2a334d;
+  border-color: var(--dark-accent-blue);
+}
+
+.header-section h1 {
+  color: whitesmoke;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.search-summary {
+  font-size: 1.1rem;
+  color: var(--dark-text-secondary);
+  margin-bottom: 20px;
+}
+
+.loading-message,
+.error-message,
+.no-results-message {
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.loading-message {
+  background-color: #2a334d;
+  color: var(--dark-text-primary);
+}
+
+.error-message {
+  background-color: #4d2a2a; /* Rojo oscuro para errores */
+  color: var(--dark-accent-red);
+  border: 1px solid var(--dark-accent-red);
+}
+
+.no-results-message {
+  background-color: #2a3a5c;
+  color: var(--dark-text-secondary);
+  border: 1px solid var(--dark-border);
+}
+
+.flight-list {
+  margin-top: 20px;
+}
+
+.sort-options {
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+  margin-bottom: 20px;
+  background-color: var(--dark-surface);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--dark-border);
+  justify-content: flex-end; 
+}
+
+.sort-options label {
+  font-size: 0.95rem;
+  color: var(--dark-text-secondary);
+}
+
+.sort-options select {
+  padding: 8px 12px;
+  border: 1px solid var(--dark-input-border);
+  border-radius: 6px;
+  background-color: var(--dark-input-bg);
+  color: var(--dark-text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  -webkit-appearance: none; /* Elimina estilos por defecto en WebKit */
+  -moz-appearance: none; /* Elimina estilos por defecto en Mozilla */
+  appearance: none; /* Elimina estilos por defecto */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20fill%3D%22%23a0a8b9%22%20d%3D%22M5.636%207.757L10%2012.121l4.364-4.364L15.757%209.172l-5.757%205.757L4.243%209.172z%22%2F%3E%3C%2Fsvg%3E'); /* Flecha personalizada */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 30px; /* Espacio para la flecha */
+}
+
+.sort-options select:focus {
+  outline: none;
+  border-color: var(--dark-accent-blue);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.sort-order-button {
+  background-color: var(--dark-accent-blue);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.sort-order-button:hover {
+  background-color: #3b7ad6; /* Un tono más oscuro de azul */
+}

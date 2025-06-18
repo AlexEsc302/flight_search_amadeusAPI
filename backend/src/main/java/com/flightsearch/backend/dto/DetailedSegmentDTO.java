@@ -12,19 +12,17 @@ public class DetailedSegmentDTO {
     private String duration;
     private String operatingCarrierCode;
     private String aircraftCode;
-
-    // New fields
-    private String departureAirportName; // From AirportDTO name in search response, or map.
-    private String arrivalAirportName;   // From AirportDTO name in search response, or map.
-    private String airlineName;        // Name of the main airline (e.g., "SPIRIT AIRLINES")
-    private String operatingAirlineName; // Name of the operating airline (if different)
-    private String aircraftTypeName;   // e.g., "AIRBUS A320"
+    private String departureAirportName; 
+    private String arrivalAirportName;  
+    private String airlineName;        
+    private String operatingAirlineName; 
+    private String aircraftTypeName;   
 
     // To hold fare details specific to this segment for each traveler
     private List<FareDetailDTO> travelerFareDetails;
 
 
-    // Getters and Setters (add for new fields, keep for existing)
+    // Getters and Setters 
     public String getDepartureIataCode() {
         return departureIataCode;
     }
