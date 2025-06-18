@@ -3,12 +3,9 @@ package com.flightsearch.backend.dto;
 import java.util.List;
  
 public class ItineraryDTO {
-    // Existing fields
-    private String id; // Optional: If you want to give a unique ID to each itinerary within an offer
-    private String direction; // Optional: "OUTBOUND" or "INBOUND" for roundtrips
+    private String id; 
+    private String direction; 
     private String duration; // Overall itinerary duration (e.g., "PT6H15M")
-
-    // New fields for overall itinerary summary
     private String departureDateTime;
     private String arrivalDateTime;
     private AirportDTO departureAirport; // Using AirportDTO for name and code
@@ -18,7 +15,7 @@ public class ItineraryDTO {
     // Existing segments list
     private List<DetailedSegmentDTO> segments;
 
-    // Getters and Setters (add for new fields, keep for existing)
+    // Getters and Setters 
     public String getId() {
         return id;
     }
@@ -51,7 +48,6 @@ public class ItineraryDTO {
         this.segments = segments;
     }
 
-    // New Getters and Setters
     public String getDepartureDateTime() {
         return departureDateTime;
     }

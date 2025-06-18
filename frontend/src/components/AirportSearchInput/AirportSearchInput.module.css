@@ -1,0 +1,96 @@
+/* frontend/src/components/AirportSearchInput/AirportSearchInput.module.css */
+.airport-search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.airport-search-input-container input {
+  width: calc(100% - 24px); /* Ajusta para padding */
+  padding: 12px;
+  border: 1px solid var(--dark-input-border); /* Borde de input oscuro */
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--dark-text-primary); /* Texto claro en el input */
+  background-color: var(--dark-input-bg); /* Fondo de input oscuro */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.airport-search-input-container input:focus {
+  outline: none;
+  border-color: var(--dark-accent-blue); /* Borde azul al enfocar */
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.25); /* Sombra sutil al enfocar */
+}
+
+/* Nota: .input-error y .error-message NO necesitan 'styles.' si se aplican directamente en className */
+/* Pero para consistencia y modularidad con CSS Modules, es mejor usarlo. */
+/* Si en tu HTML/JSX los usas como className="input-error", déjalos sin styles. */
+/* Si los usas como className={styles['input-error']}, entonces sí. */
+/* Mi código TSX arriba ya los usa con styles['...'] */
+
+.input-error { /* Se usa con styles['input-error'] en TSX */
+  border-color: var(--dark-accent-red) !important; /* !important para asegurar que sobrescriba */
+}
+
+.error-message { /* Se usa con styles['error-message'] en TSX */
+  color: var(--dark-accent-red);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.loading-spinner {
+  position: absolute;
+  right: 12px; /* Posición dentro del input */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--dark-accent-blue); /* Azul de acento para el spinner */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  background-color: var(--dark-surface); /* Superficie oscura para el dropdown */
+  border: 1px solid var(--dark-border); /* Borde oscuro */
+  border-radius: 6px;
+  max-height: 220px; /* Altura máxima para el scroll */
+  overflow-y: auto; /* Habilita el scroll vertical */
+  width: 100%;
+  box-shadow: var(--dark-shadow); /* Sombra suave */
+  margin-top: 5px;
+  list-style: none; /* Asegura que no tenga viñetas si fuera un ul */
+  padding: 0; /* Elimina padding por defecto de listas */
+}
+
+.suggestion-item {
+  padding: 12px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--dark-border); /* Borde oscuro */
+  font-size: 0.95rem;
+  color: var(--dark-text-primary); /* Texto claro */
+  transition: background-color 0.15s ease; /* Transición suave para hover */
+}
+
+.suggestion-item:last-child {
+  border-bottom: none; /* No hay borde en el último elemento */
+}
+
+.suggestion-item:hover {
+  background-color: #222c4d; /* Un tono ligeramente más claro al pasar el ratón */
+}
+
+.no-suggestions {
+    padding: 12px;
+    color: var(--dark-text-secondary); /* Usa la variable CSS para el texto secundario */
+    font-style: italic;
+    text-align: center;
+}

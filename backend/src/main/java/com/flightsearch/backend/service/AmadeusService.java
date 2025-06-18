@@ -185,7 +185,6 @@ public class AmadeusService {
                     .doOnError(error -> logger.error("Raw flight search failed: {}", error.getMessage()))
                     .flatMap(rawFlightResponse -> {
 
-                        // --- Cache section ---
                         JsonNode dataNodeForCaching = rawFlightResponse.get("data");
                         if (dataNodeForCaching != null && dataNodeForCaching.isArray()) {
                             for (JsonNode offerToCache : dataNodeForCaching) {
@@ -198,8 +197,6 @@ public class AmadeusService {
                         } else {
                              logger.warn("No 'data' found in raw flight response for caching purposes.");
                         }
-                        // --- End of cache section ---
-
 
                         Set<String> uniqueAirportCodes = new HashSet<>();
                         JsonNode dataNode = rawFlightResponse.get("data");
@@ -369,7 +366,7 @@ public class AmadeusService {
                 logger.warn("No 'price' node found for offer ID: {}", offerId);
             }
 
-            // --- Mapeo de Itineraries ---
+            // --- Mapping method Itineraries ---
             JsonNode itineraries = offer.get("itineraries");
             if (itineraries != null && itineraries.isArray() && itineraries.size() > 0) {
                 boolean isRoundTrip = itineraries.size() > 1;
@@ -392,7 +389,7 @@ public class AmadeusService {
                     result.setDuration(itinerary.get("duration") != null ? itinerary.get("duration").asText() : null);
 
                     List<FlightSegmentDTO> segments = new ArrayList<>();
-                    List<StopDTO> stops = new ArrayList<>(); // CAMBIO: Initialize stops list for search result DTO
+                    List<StopDTO> stops = new ArrayList<>(); 
                     LocalDateTime previousSegmentArrival = null;
 
                     JsonNode segmentsArray = itinerary.get("segments");
@@ -525,11 +522,11 @@ public class AmadeusService {
                 try {
                     double base = Double.parseDouble(priceDTO.getBase());
                     double total = Double.parseDouble(priceDTO.getTotal());
-                    double calculatedFees = total - base;
-                    priceDTO.setFees(String.format("%.2f", calculatedFees));
+                    double Fees = total - base;
+                    priceDTO.setFees(String.format("%.2f", Fees));
                 } catch (NumberFormatException e) {
                     logger.warn("Could not parse price numbers for fees calculation for offer ID {}: {}. Setting fees to null.", amadeusOfferId, e.getMessage());
-                    priceDTO.setFees(null); // Set to null or "0.00" on error
+                    priceDTO.setFees(null); // Set to null on error
                 }
             } else {
                 logger.warn("Base or GrandTotal price is null for offer ID {}. Cannot calculate fees. Setting fees to null.", amadeusOfferId);
@@ -635,7 +632,7 @@ public class AmadeusService {
                 itineraryDTO.setStops(stops);
 
 
-                // Mapeo de Segments
+                // Mapping of Segments
                 List<DetailedSegmentDTO> detailedSegments = new ArrayList<>();
                 if (segmentsNode != null && segmentsNode.isArray()) {
                     for (JsonNode segmentNode : segmentsNode) {
@@ -662,7 +659,7 @@ public class AmadeusService {
                         detailedSegment.setOperatingAirlineName(getAirlineName(detailedSegment.getOperatingCarrierCode()));
                         detailedSegment.setAircraftTypeName(getAircraftTypeName(detailedSegment.getAircraftCode()));
 
-                        // --- Mapeo de FareDetails y AMENITIES ---
+                        // --- Mapping of FareDetails and AMENITIES ---
                         // For each segment, find the corresponding fare details for each traveler
                         List<FareDetailDTO> travelerFareDetailsForSegment = new ArrayList<>();
                         if (travelerPricingsNode != null && travelerPricingsNode.isArray()) {
@@ -702,6 +699,7 @@ public class AmadeusService {
                                                     amenityDTO.setDescription(safeGetText(amenityNode, "description"));
                                                     amenityDTO.setChargeable(safeGetBoolean(amenityNode, "isChargeable", false));
                                                     amenityDTO.setAmenityType(safeGetText(amenityNode, "amenityType"));
+
                                                     fareDetail.getAmenities().add(amenityDTO);
                                                     logger.debug("      Added Amenity: Description='{}'", amenityDTO.getDescription());
                                                 }
@@ -736,7 +734,7 @@ public class AmadeusService {
      * @return The full airline name, or the code if not found in the map.
      */
     private String getAirlineName(String carrierCode) {
-        if (carrierCode == null) return null; // CAMBIO: Handle null input
+        if (carrierCode == null) return null; 
         return airlineNamesMap.getOrDefault(carrierCode, carrierCode);
     }
 
@@ -747,7 +745,7 @@ public class AmadeusService {
      * @return The full aircraft type name, or the code if not found in the map.
      */
     private String getAircraftTypeName(String aircraftCode) {
-        if (aircraftCode == null) return null; // CAMBIO: Handle null input
+        if (aircraftCode == null) return null; 
         return aircraftTypeNamesMap.getOrDefault(aircraftCode, aircraftCode);
     }
 

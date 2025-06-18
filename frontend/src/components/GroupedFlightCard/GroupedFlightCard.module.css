@@ -1,0 +1,188 @@
+/* frontend/src/components/GroupedFlightCard/GroupedFlightCard.module.css */
+.grouped-flight-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Alinea los ítems al inicio para que el contenido no se estire */
+  background-color: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: var(--dark-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.grouped-flight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.flight-info-section {
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.flight-direction-title {
+  color: whitesmoke;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--dark-border);
+  padding-bottom: 5px;
+  margin-top: 15px;
+}
+
+.flight-direction-title:first-of-type {
+  margin-top: 0; /* Elimina margen superior para el primer título */
+}
+
+/* Estilos para FlightSegmentDisplay */
+.flight-segment-display {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #2a3a5c; /* Un fondo ligeramente diferente para el segmento */
+  border-radius: 6px;
+}
+
+.flight-times-route {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Espacio entre los elementos */
+  margin-bottom: 8px;
+}
+
+.time-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--dark-text-primary);
+}
+
+.airport-name-code { 
+  font-size: 0.9rem;
+  color: var(--dark-text-secondary);
+  text-align: center; /* Para que el texto largo no se desborde */
+  max-width: 170px; /* Limita el ancho si el nombre es muy largo */
+  white-space: nowrap; /* Evita saltos de línea inesperados */
+  overflow: hidden; /* Oculta el texto que se desborda */
+  text-overflow: ellipsis; /* Añade puntos suspensivos */
+}
+
+.arrow-duration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1; /* Permite que ocupe el espacio central */
+}
+
+.arrow {
+  font-size: 1.5rem;
+  color: whitesmoke;
+  margin-bottom: 2px;
+}
+
+.duration {
+  font-size: 0.85rem;
+  color: var(--dark-text-secondary);
+  white-space: nowrap; /* Evita que se rompa la duración */
+}
+
+.flight-date {
+  font-size: 0.9rem;
+  color: var(--dark-text-secondary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.flight-airline-stops {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--dark-text-primary);
+  margin-bottom: 5px;
+}
+
+.airline-name {
+  font-weight: 500;
+}
+
+.stops-info {
+  color: var(--dark-accent-red); /* Rojo para escalas */
+  font-weight: 500;
+}
+
+.operating-airline {
+  font-size: 0.8rem;
+  color: var(--dark-text-secondary);
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.layover-details {
+  font-size: 0.85rem;
+  color: var(--dark-text-secondary);
+  margin-top: 10px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--dark-border);
+}
+
+.layover-item {
+  display: inline-block;
+  margin-right: 8px;
+  background-color: #3f4e7a; /* Un fondo sutil para cada escala */
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+
+/* Sección de precios */
+.flight-price-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center; /* Centra verticalmente los precios */
+  min-width: 150px; /* Asegura un ancho mínimo para los precios */
+}
+
+.total-price {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.total-price .price-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--dark-accent-green); /* Verde para el precio total */
+  display: block;
+  line-height: 1.1; /* Ajusta la altura de la línea */
+}
+
+.total-price .price-label {
+  font-size: 0.85rem;
+  color: var(--dark-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.per-traveler-price {
+  text-align: right;
+  font-size: 0.9rem;
+  color: var(--dark-text-primary);
+}
+
+.per-traveler-price .price-value {
+  font-weight: 600;
+  display: block;
+}
+
+.per-traveler-price .price-label {
+  font-size: 0.75rem;
+  color: var(--dark-text-secondary);
+}

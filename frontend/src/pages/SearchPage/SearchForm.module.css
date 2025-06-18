@@ -1,0 +1,134 @@
+/* frontend/src/pages/SearchPage/SearchForm.module.css */
+.search-form {
+  background-color: var(--dark-surface);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: var(--dark-shadow);
+  width: 100%;
+  max-width: 450px; 
+  display: grid;
+  grid-template-columns: 1fr; 
+  gap: 20px;
+  border: 1px solid var(--dark-border);
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: grid;
+  flex-direction: column; 
+  gap: 15px; 
+  align-items: flex-start;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--dark-text-secondary);
+  font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="number"],
+.form-group select {
+  padding: 12px;
+  border: 1px solid var(--dark-input-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--dark-text-primary);
+  background-color: var(--dark-input-bg);
+  transition: border-color 0.2s ease-in-out;
+  width: 100%; /* Por defecto, ocupan el 100% de su contenedor */
+  box-sizing: border-box; /* Incluye padding en el ancho */
+}
+
+.form-group .airport-input-container { /* Asume que AirportSearchInput tiene un contenedor con esta clase */
+  width: 50%; /* Ocupa el ancho completo de su columna */
+  /* max-width: 300px; */ /* Si quieres un ancho máximo para el input mismo */
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--dark-accent-blue); 
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.25); 
+}
+
+.form-group .input-error {
+  border-color: var(--dark-accent-red); 
+}
+
+.error-message {
+  color: var(--dark-accent-red);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.1);
+  accent-color: var(--dark-accent-blue); 
+}
+
+.search-form button {
+  padding: 14px 25px;
+  background-color: var(--dark-accent-green);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  margin-top: 25px;
+  letter-spacing: 0.5px;
+}
+
+.search-form button:hover:not(:disabled) {
+  background-color: #1e702e; 
+  transform: translateY(-2px);
+}
+
+.search-form button:disabled {
+  background-color: #555555; 
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .search-form {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 15px;
+  }
+}
+
+.form-group.inline-fields {
+  display: flex; 
+  flex-direction: row; 
+  align-items: center; 
+}
+
+.form-group.inline-fields label {
+  /* Controla el ancho del label para que no se pegue tanto a la izquierda */
+  min-width: 80px; /* Dale un ancho mínimo para que tenga espacio */
+  max-width: 120px; /* Dale un ancho máximo, si tus labels pueden ser largos */
+  text-align: right; /* Alinea el texto del label a la derecha */
+  flex-shrink: 0; /* Evita que el label se encoja si no hay espacio */
+  margin-bottom: 0; /* Asegúrate de que no haya margen inferior si el gap maneja el espaciado */
+}
+
+.form-group.inline-fields input[type="text"] {
+    max-width: 250Compx; 
+    flex-grow: 1;
+    width: 50%;
+}

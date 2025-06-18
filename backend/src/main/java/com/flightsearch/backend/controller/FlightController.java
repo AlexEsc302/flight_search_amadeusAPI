@@ -92,7 +92,7 @@ public class FlightController {
         logger.info("Flight search request received: origin={}, destination={}, departureDate={}, adults={}, currency={}, nonStop={}, returnDate={}",
             origin, destination, departureDate, adults, currency, nonStop, returnDate);
 
-        // --- VALIDACIONES DE FECHA ---
+        // --- Date validation ---
         LocalDate parsedDepartureDate;
         try {
             parsedDepartureDate = LocalDate.parse(departureDate);
@@ -126,7 +126,7 @@ public class FlightController {
             }
         }
 
-        // Llamar al servicio
+        // Call the Amadeus service to search for flights
         return amadeusService.searchFlights(origin, destination, departureDate, adults, currency, nonStop, returnDate)
             .map(result -> ResponseEntity.ok().<Object>body(result)) 
             .onErrorResume(error -> {
@@ -139,18 +139,16 @@ public class FlightController {
     /**
      * Flight details endpoint
      * GET /api/flights/{amadeusOfferId}/details
-     * amadeusOfferId is the original Amadeus ID, NOT the one suffixed with -0 or -1
      */
     @GetMapping("/flights/{amadeusOfferId}/details")
     public Mono<ResponseEntity<Object>> getFlightDetails(@PathVariable String amadeusOfferId) {
         logger.info("Received request for flight details for Amadeus Offer ID: {}", amadeusOfferId);
 
         return amadeusService.getFlightOfferDetails(amadeusOfferId) // Mono<JsonNode> (this is now the *individual flight offer* JsonNode)
-            .flatMap(individualFlightOfferNode -> { // Renamed for clarity: it's the cached flight offer
-                final JsonNode mainFlightOfferNode = individualFlightOfferNode; // No need to extract further, this IS the offer
+            .flatMap(individualFlightOfferNode -> { 
+                final JsonNode mainFlightOfferNode = individualFlightOfferNode; 
 
                 Set<String> uniqueAirportCodes = new HashSet<>();
-                // Populate uniqueAirportCodes using mainFlightOfferNode (the correct node)
                 JsonNode itineraries = mainFlightOfferNode.get("itineraries");
                 if (itineraries != null && itineraries.isArray()) {
                     for (JsonNode itinerary : itineraries) {
@@ -213,7 +211,7 @@ public class FlightController {
                         }));
                 }
                 
-                return resultMono.map(detailsDTO -> ResponseEntity.ok().<Object>body(detailsDTO)); // Moved .map here
+                return resultMono.map(detailsDTO -> ResponseEntity.ok().<Object>body(detailsDTO)); 
             })
             .onErrorResume(error -> {
                 logger.error("Error during flight details fetch for offer ID {}: {}", amadeusOfferId, error.getMessage(), error);

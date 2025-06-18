@@ -7,11 +7,11 @@ public class FareDetailDTO {
     private String cabin;
     private String fareBasis;
     private String brandedFare;
-    private String classCode; // En Amadeus es "class"
+    private String classCode; 
     private List<AmenityDTO> amenities;
 
     public FareDetailDTO() {
-        this.amenities = new ArrayList<>(); // Inicializar para evitar NPE
+        this.amenities = new ArrayList<>(); 
     }
 
     // Getters y Setters
