@@ -38,13 +38,12 @@
   color: var(--dark-text-primary);
   background-color: var(--dark-input-bg);
   transition: border-color 0.2s ease-in-out;
-  width: 100%; /* Por defecto, ocupan el 100% de su contenedor */
-  box-sizing: border-box; /* Incluye padding en el ancho */
+  width: 100%; 
+  box-sizing: border-box; 
 }
 
-.form-group .airport-input-container { /* Asume que AirportSearchInput tiene un contenedor con esta clase */
-  width: 50%; /* Ocupa el ancho completo de su columna */
-  /* max-width: 300px; */ /* Si quieres un ancho máximo para el input mismo */
+.form-group .airport-input-container { 
+  width: 50%; 
 }
 
 .form-group input[type="text"]:focus,
@@ -119,16 +118,50 @@
 }
 
 .form-group.inline-fields label {
-  /* Controla el ancho del label para que no se pegue tanto a la izquierda */
-  min-width: 80px; /* Dale un ancho mínimo para que tenga espacio */
-  max-width: 120px; /* Dale un ancho máximo, si tus labels pueden ser largos */
-  text-align: right; /* Alinea el texto del label a la derecha */
-  flex-shrink: 0; /* Evita que el label se encoja si no hay espacio */
-  margin-bottom: 0; /* Asegúrate de que no haya margen inferior si el gap maneja el espaciado */
+  min-width: 80px; 
+  max-width: 120px; 
+  text-align: right;
+  flex-shrink: 0;
+  margin-bottom: 0; 
 }
 
 .form-group.inline-fields input[type="text"] {
     max-width: 250Compx; 
     flex-grow: 1;
     width: 50%;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.input-row label {
+  flex: 0 0 120px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--dark-text-secondary);
+  font-size: 0.95rem;
+}
+
+.input-row input,
+.input-row select,
+.input-row .airport-search-input-container {
+  flex: 1;
+  width: 100%;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: right;
+  gap: 10px;
+  margin-top: 10px;
+  margin-left: 120px; 
+}
+
+.input-error {
+  border-color: var(--dark-accent-red);
 }

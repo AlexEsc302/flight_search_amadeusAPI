@@ -6,7 +6,7 @@
   align-items: center;
   padding: 20px;
   max-width: 800px;
-  margin: 20px auto;
+  margin: auto auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--dark-background); 
   color: var(--dark-text-primary); 
@@ -15,7 +15,7 @@
 }
 
 .search-page h1 {
-  color: var(--dark-accent-blue); 
+  color: var(--dark-text-primary); 
   margin-bottom: 30px;
   font-size: 3rem;
   text-align: center;

@@ -1,9 +1,8 @@
-// frontend/src/pages/SearchPage/SearchForm.tsx
 import React, { useState, useEffect } from 'react';
 import AirportSearchInput from '../../components/AirportSearchInput/AirportSearchInput';
 import { FlightSearchParams } from '../../types/flightTypes';
-import { format } from 'date-fns'; 
-import styles from './SearchForm.module.css'; 
+import { format } from 'date-fns';
+import styles from './SearchForm.module.css';
 
 interface SearchFormProps {
   onSearch: (params: FlightSearchParams) => void;
@@ -17,33 +16,26 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
   const [adults, setAdults] = useState<number>(1);
   const [currency, setCurrencyCode] = useState<string>('USD');
   const [nonStop, setNonStop] = useState<boolean>(false);
-
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false); 
 
   const today = format(new Date(), 'yyyy-MM-dd');
 
   useEffect(() => {
     const errors: Record<string, string> = {};
-    if (!originLocationCode) errors.originLocationCode = 'Field required';
-    if (!destinationLocationCode) errors.destinationLocationCode = 'Field required';
-    if (!departureDate) errors.departureDate = 'Field required';
-    if (adults < 1) errors.adults = 'There must be at least one adult';
-
-    if (departureDate && new Date(departureDate) < new Date(today)) {
-      errors.departureDate = 'Exit date cannot be in the past.';
-    }
-
-    if (returnDate && returnDate !== '' && new Date(returnDate) < new Date(departureDate || today)) {
-        errors.returnDate = 'The date of return cannot be earlier than the date of departure.';
-    }
-
+    if (!originLocationCode) errors.originLocationCode = 'Required';
+    if (!destinationLocationCode) errors.destinationLocationCode = 'Required';
+    if (!departureDate) errors.departureDate = 'Required';
+    if (adults < 1) errors.adults = 'Min. 1 adult';
+    if (new Date(departureDate) < new Date(today)) errors.departureDate = 'Cannot be in the past';
+    if (returnDate && new Date(returnDate) < new Date(departureDate)) errors.returnDate = 'Return after departure';
 
     setFormErrors(errors);
-  }, [originLocationCode, destinationLocationCode, departureDate, returnDate, adults, today]);
+  }, [originLocationCode, destinationLocationCode, departureDate, returnDate, adults]);
 
-  const isValid = Object.keys(formErrors).length === 0 && originLocationCode !== '' && destinationLocationCode !== '';
+  const isValid = Object.keys(formErrors).length === 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isValid) {
       const params: FlightSearchParams = {
@@ -53,65 +45,67 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
         adults,
         currency,
         nonStop,
-        ...(returnDate && { returnDate }), 
+        ...(returnDate && { returnDate }),
       };
-      onSearch(params);
+
+      setIsLoading(true); // Mostrar loading
+      try {
+        await onSearch(params); // Ejecutar búsqueda
+      } finally {
+        setIsLoading(false); // Ocultar loading después
+      }
     } else {
       alert('Please correct the errors in the form.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="search-form">
-      <div className={`${styles['form-group']} ${styles['inline-fields']}`}>
+    <form onSubmit={handleSubmit} className={styles['search-form']}>
+      <div className={styles['input-row']}>
         <label htmlFor="origin">Origin:</label>
         <AirportSearchInput
           id="origin"
           value={originLocationCode}
-          onSelect={(code) => setOriginLocationCode(code)}
-          placeholder="IATA Code or Airport Name"
+          onSelect={setOriginLocationCode}
           error={formErrors.originLocationCode}
         />
       </div>
 
-      <div className={`${styles['form-group']} ${styles['inline-fields']}`}>
+      <div className={styles['input-row']}>
         <label htmlFor="destination">Destination:</label>
         <AirportSearchInput
           id="destination"
           value={destinationLocationCode}
-          onSelect={(code) => setDestinationLocationCode(code)}
-          placeholder="IATA Code or Airport Name"
+          onSelect={setDestinationLocationCode}
           error={formErrors.destinationLocationCode}
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="departureDate">Departure date:</label>
+      <div className={styles['input-row']}>
+        <label htmlFor="departureDate">Departure:</label>
         <input
           type="date"
           id="departureDate"
           value={departureDate}
           onChange={(e) => setDepartureDate(e.target.value)}
           min={today}
-          className={formErrors.departureDate ? 'input-error' : ''}
+          className={formErrors.departureDate ? styles['input-error'] : ''}
         />
-        {formErrors.departureDate && <span className="error-message">{formErrors.departureDate}</span>}
       </div>
 
-      <div className="form-group">
-        <label htmlFor="returnDate">Return date (optional):</label>
+      <div className={styles['input-row']}>
+        <label htmlFor="returnDate">Return (opt.):</label>
         <input
           type="date"
           id="returnDate"
           value={returnDate}
           onChange={(e) => setReturnDate(e.target.value)}
-          min={departureDate || today}
-          className={formErrors.returnDate ? 'input-error' : ''}
+          min={departureDate}
+          className={formErrors.returnDate ? styles['input-error'] : ''}
         />
-        {formErrors.returnDate && <span className="error-message">{formErrors.returnDate}</span>}
       </div>
 
-      <div className="form-group">
+      <div className={styles['input-row']}>
         <label htmlFor="adults">Adults:</label>
         <input
           type="number"
@@ -119,12 +113,11 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
           value={adults}
           onChange={(e) => setAdults(parseInt(e.target.value))}
           min="1"
-          className={formErrors.adults ? 'input-error' : ''}
+          className={formErrors.adults ? styles['input-error'] : ''}
         />
-        {formErrors.adults && <span className="error-message">{formErrors.adults}</span>}
       </div>
 
-      <div className="form-group">
+      <div className={styles['input-row']}>
         <label htmlFor="currency">Currency:</label>
         <select
           id="currency"
@@ -137,17 +130,19 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
         </select>
       </div>
 
-      <div className="form-group checkbox-group">
+      <div className={styles['checkbox-row']}>
         <input
           type="checkbox"
           id="nonStop"
           checked={nonStop}
           onChange={(e) => setNonStop(e.target.checked)}
         />
-        <label htmlFor="nonStop">Direct flights only</label>
+        <label htmlFor="nonStop">Only direct flights</label>
       </div>
 
-      <button type="submit" disabled={!isValid}>Search Flights</button>
+      <button type="submit" disabled={!isValid || isLoading}>
+        {isLoading ? 'Searching...' : 'Search Flights'}
+      </button>
     </form>
   );
 };

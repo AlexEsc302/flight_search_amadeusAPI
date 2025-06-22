@@ -6,7 +6,6 @@ import GroupedFlightCard from '../../components/GroupedFlightCard/GroupedFlightC
 import styles from './ResultsPage.module.css';
 import { searchFlights } from '../../services/api';
 import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale'; 
 
 const ResultsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -172,8 +171,8 @@ const ResultsPage: React.FC = () => {
         <h1>Flight Results</h1>
         {searchParams && (
             <p className={styles['search-summary']}>
-                {searchParams.originLocationCode} &rarr; {searchParams.destinationLocationCode} | {format(parseISO(searchParams.departureDate), 'd MMM yyyy', { locale: es })}
-                {searchParams.returnDate && ` - ${format(parseISO(searchParams.returnDate), 'd MMM yyyy', { locale: es })}`} | {searchParams.adults} adult(s) | {searchParams.currency}
+                {searchParams.originLocationCode} &rarr; {searchParams.destinationLocationCode} | {format(parseISO(searchParams.departureDate), 'd MMM yyyy')}
+                {searchParams.returnDate && ` - ${format(parseISO(searchParams.returnDate), 'd MMM yyyy')}`} | {searchParams.adults} adult(s) | {searchParams.currency}
             </p>
         )}
       </div>
