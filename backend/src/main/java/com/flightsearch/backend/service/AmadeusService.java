@@ -190,7 +190,6 @@ public class AmadeusService {
                     .doOnError(error -> logger.error("Raw flight search failed: {}", error.getMessage()))
                     .flatMap(rawFlightResponse -> {
 
-                        // --- START OF THE CRITICAL CACHE SECTION ---
                         JsonNode dataNodeForCaching = rawFlightResponse.get("data");
                         if (dataNodeForCaching != null && dataNodeForCaching.isArray()) {
                             for (JsonNode offerToCache : dataNodeForCaching) {
@@ -203,8 +202,6 @@ public class AmadeusService {
                         } else {
                              logger.warn("No 'data' found in raw flight response for caching purposes.");
                         }
-                        // --- END OF THE CRITICAL CACHE SECTION ---
-
 
                         Set<String> uniqueAirportCodes = new HashSet<>();
                         JsonNode dataNode = rawFlightResponse.get("data");
@@ -552,7 +549,6 @@ public class AmadeusService {
 
                 if (travelerPricingsNode.size() > 0) {
                     JsonNode firstTravelerPricing = travelerPricingsNode.get(0);
-                    // Ensure pricePerAdult is correctly retrieved from first traveler pricing's price.total
                     if (firstTravelerPricing.has("price") && firstTravelerPricing.get("price").has("total")) {
                         priceDTO.setPricePerAdult(firstTravelerPricing.get("price").get("total").asText());
                     } else {
@@ -584,7 +580,6 @@ public class AmadeusService {
                 itineraryDTO.setId(amadeusOfferId + "-" + itineraryIndex++);
                 itineraryDTO.setDuration(safeGetText(itineraryNode, "duration"));
 
-                // Simple logic for direction based on index.
                 itineraryDTO.setDirection(itineraryIndex == 1 ? "OUTBOUND" : "INBOUND");
 
 
@@ -593,7 +588,7 @@ public class AmadeusService {
                     JsonNode firstSegment = segmentsNode.get(0);
                     JsonNode lastSegment = segmentsNode.get(segmentsNode.size() - 1);
 
-                    // This is where you set the departure and arrival times for the ITINERARY
+                    // This is where is set the departure and arrival times for the ITINERARY
                     // They are taken from the first and last segments of that itinerary.
                     itineraryDTO.setDepartureDateTime(safeGetText(firstSegment.get("departure"), "at"));
                     itineraryDTO.setArrivalDateTime(safeGetText(lastSegment.get("arrival"), "at"));
@@ -652,7 +647,7 @@ public class AmadeusService {
                     for (JsonNode segmentNode : segmentsNode) {
                         DetailedSegmentDTO detailedSegment = new DetailedSegmentDTO();
 
-                        String currentSegmentId = safeGetText(segmentNode, "id"); // Ensure this is extracting "1" or "2"
+                        String currentSegmentId = safeGetText(segmentNode, "id"); 
                         logger.debug("Processing segment with ID: {}", currentSegmentId);
 
                         detailedSegment.setDepartureIataCode(safeGetText(segmentNode.get("departure"), "iataCode"));
@@ -666,8 +661,8 @@ public class AmadeusService {
                         detailedSegment.setAircraftCode(safeGetText(segmentNode.get("aircraft"), "code"));
 
                         // Lookup names using predefined maps or a more comprehensive dictionary
-                        detailedSegment.setDepartureAirportName(detailedSegment.getDepartureIataCode()); // Placeholder, improve with lookup
-                        detailedSegment.setArrivalAirportName(detailedSegment.getArrivalIataCode());   // Placeholder, improve with lookup
+                        detailedSegment.setDepartureAirportName(detailedSegment.getDepartureIataCode()); 
+                        detailedSegment.setArrivalAirportName(detailedSegment.getArrivalIataCode());  
 
                         detailedSegment.setAirlineName(getAirlineName(detailedSegment.getCarrierCode()));
                         detailedSegment.setOperatingAirlineName(getAirlineName(detailedSegment.getOperatingCarrierCode()));
