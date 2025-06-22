@@ -2,7 +2,6 @@
 import React from 'react';
 import { GroupedFlightOffer, FlightSearchResult } from '../../types/flightTypes';
 import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
 import styles from './GroupedFlightCard.module.css';
 
 interface GroupedFlightCardProps {
@@ -27,8 +26,8 @@ const formatDuration = (isoDuration: string | undefined): string => {
 const FlightSegmentDisplay: React.FC<{ flight: FlightSearchResult }> = ({ flight }) => {
   const departureTime = format(parseISO(flight.departureDateTime), 'HH:mm');
   const arrivalTime = format(parseISO(flight.arrivalDateTime), 'HH:mm');
-  const departureDate = format(parseISO(flight.departureDateTime), 'EEE d MMM', { locale: es });
-  const arrivalDate = format(parseISO(flight.arrivalDateTime), 'EEE d MMM', { locale: es });
+  const departureDate = format(parseISO(flight.departureDateTime), 'EEE d MMM');
+  const arrivalDate = format(parseISO(flight.arrivalDateTime), 'EEE d MMM');
 
   const numStops = flight.stops.length;
   const isNonStop = numStops === 0;

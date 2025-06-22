@@ -62,6 +62,7 @@ public class AmadeusService {
     static {
         // Airline names (IATA code -> Full Name)
         airlineNamesMap.put("AA", "AMERICAN AIRLINES");
+        airlineNamesMap.put("AC", "AIR CANADA");
         airlineNamesMap.put("DL", "DELTA AIR LINES");
         airlineNamesMap.put("UA", "UNITED AIRLINES");
         airlineNamesMap.put("SW", "SOUTHWEST AIRLINES");
@@ -80,8 +81,12 @@ public class AmadeusService {
         aircraftTypeNamesMap.put("32A", "AIRBUS A320"); 
         aircraftTypeNamesMap.put("320", "AIRBUS A320");
         aircraftTypeNamesMap.put("321", "AIRBUS A321");
+        aircraftTypeNamesMap.put("319", "AIRBUS A319");
+        aircraftTypeNamesMap.put("223", "AIRBUS A220-300"); 
         aircraftTypeNamesMap.put("32Q", "AIRBUS A320neo");
         aircraftTypeNamesMap.put("738", "BOEING 737-800");
+        aircraftTypeNamesMap.put("77L", "BOEING 777-200LR");
+        aircraftTypeNamesMap.put("789", "BOEING 787-9 Dreamliner");
     }
 
 
@@ -277,6 +282,10 @@ public class AmadeusService {
             .doOnError(error -> logger.error("Flight search failed: {}", error.getMessage()));
     }
 
+    public Map<String, JsonNode> getFlightOffersCache() {
+        return flightOffersCache;
+    }
+
     // --- Internal mapping method ---
     private List<FlightSearchResultDTO> mapToFlightSearchResultInternal(JsonNode jsonNode, Map<String, String> fullAirportNamesMap) {
         List<FlightSearchResultDTO> flightOffers = new ArrayList<>();
@@ -287,7 +296,7 @@ public class AmadeusService {
         if (dictionaries != null) {
             JsonNode carriers = dictionaries.get("carriers");
             if (carriers != null) {
-                carriers.fields().forEachRemaining(entry -> {
+                carriers.properties().forEach(entry -> {
                     String iataCode = entry.getKey();
                     String name = entry.getValue().asText();
                     airlineNames.put(iataCode, name);
