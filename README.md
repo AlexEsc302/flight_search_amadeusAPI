@@ -26,22 +26,22 @@ This is a full-stack web application that allows users to search for flights usi
 
 ## ⚙️ Project Structure
 
-/project-root
-│
-├── backend/ # Java Spring Boot backend
-│ ├── src/
-│ ├── build.gradle
-│ ├── settings.gradle
-│ └── Dockerfile
-│
-├── frontend/ # React TypeScript frontend
-│ ├── src/
-│ ├── public/
-│ ├── package.json
-│ ├── tsconfig.json
-│ └── Dockerfile
-│
-└── docker-compose.yml # Compose file to run both services
+  /project-root
+  │
+  ├── backend/ # Java Spring Boot backend
+  │ ├── src/
+  │ ├── build.gradle
+  │ ├── settings.gradle
+  │ └── Dockerfile
+  │
+  ├── frontend/ # React TypeScript frontend
+  │ ├── src/
+  │ ├── public/
+  │ ├── package.json
+  │ ├── tsconfig.json
+  │ └── Dockerfile
+  │
+  └── docker-compose.yml # Compose file to run both services
 
 
 ---
