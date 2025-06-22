@@ -25,7 +25,7 @@ This is a full-stack web application that allows users to search for flights usi
 ---
 
 ## ⚙️ Project Structure
-
+```bash
   /project-root
   │
   ├── backend/ # Java Spring Boot backend
@@ -42,7 +42,7 @@ This is a full-stack web application that allows users to search for flights usi
   │ └── Dockerfile
   │
   └── docker-compose.yml # Compose file to run both services
-
+```
 
 ---
 
